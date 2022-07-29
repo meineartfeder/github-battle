@@ -1,33 +1,71 @@
-import React from "react";
-import { FaTimesCircle } from 'react-icons/fa'
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { MdOutlineDeleteOutline, MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md'
 
-function TodoListItem({ todos, onReset }) {
-  return (
-    <React.Fragment>
-      {todos.map((todo, index) => (
-        <li key={index} className="todo-list__item">
-          #todo{ index + 1 } { todo }
-
-          <button className='btn-clear flex-center' onClick={onReset}>
-            <FaTimesCircle color='rgb(194, 57, 42)' size={26} />
-          </button>
-        </li>
-      ))}
-    </React.Fragment>
-  )
+class TodoListItem extends React.Component {
+  state = {
+    done: this.props.done
+  }
+  onClickDelete = () => {
+    this.props.onDelete(this.props.id)
+  }
+  onClickDone = () => {
+    this.props.onDone(this.props.id)
+  }
+  render() {
+    const { task, done } = this.props
+    return (
+      <li
+        className={`todo-list__item ${done ? 'todo-list__item--done' : null}`}
+      >
+        <button className='btn-done' onClick={this.onClickDone}>
+          {done === true
+            ? <React.Fragment>
+              <MdCheckBox size={26} />
+              <span className="sr-only">Undone</span>
+            </React.Fragment>
+            : <React.Fragment>
+              <MdCheckBoxOutlineBlank size={26} />
+              <span className="sr-only">Done</span>
+            </React.Fragment>
+          }
+        </button>
+        {task}
+        <button className='btn-clear' onClick={this.onClickDelete}>
+          <MdOutlineDeleteOutline color='#FFFFFF' size={26} />
+        </button>
+      </li>
+    )
+  }
 }
 
 TodoListItem.propTypes = {
-  todos: PropTypes.array.isRequired
+  id: PropTypes.number.isRequired,
+  task: PropTypes.string.isRequired,
+  done: PropTypes.bool.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onDone: PropTypes.func.isRequired
 }
 
-export default function TodoList({ todos, children }) {
-  return (
-    <ul className="todo-list">
-      <TodoListItem todos={todos}>
-        {children}
-      </TodoListItem> 
-    </ul>
-  )
+export default class TodoList extends React.Component {
+  render() {
+    const items = this.props.todos.map((task, index) => {
+      return (
+        <TodoListItem key={index} task={task.value} done={task.done} id={index} onDelete={this.props.onDelete} onDone={this.props.onDone} />
+      )
+    })
+    return (
+      <React.Fragment>
+        <ul className='todo-list'>
+          {items}
+        </ul>
+      </React.Fragment>
+    )
+  }
+}
+
+TodoList.propTypes = {
+  todos: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onDone: PropTypes.func.isRequired
 }

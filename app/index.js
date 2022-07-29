@@ -1,7 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client';
 import './index.scss'
-import  { ThemeProvider } from './contexts/theme'
+import { ThemeProvider } from './contexts/theme'
 import Nav from './components/Nav'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Loading from './components/Loading';
