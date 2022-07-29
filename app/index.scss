@@ -52,23 +52,21 @@ li {
 }
 
 .btn-clear {
-    border: none;
-    background: transparent;
+  border: none;
+  background: transparent;
 
-    &:hover,
-    &:focus {
-      svg {
-        fill: #F79D84;
-      }
+  &:hover {
+    svg {
+      fill: #F79D84;
     }
+  }
 }
 
 .btn-done {
   border: none;
   background: transparent;
 
-  &:hover,
-  &:focus {
+  &:hover {
     svg {
       fill: #F79D84;
     }
@@ -82,8 +80,7 @@ li {
   color: inherit;
   display: inline-flex;
 
-  :hover,
-  :focus {
+  :hover {
     color: $hover-color;
   }
 }
@@ -358,8 +355,7 @@ li {
         fill: var(--color);
       }
 
-      &:hover,
-      &:focus {
+      &:hover {
         svg {
           fill: #DB5461;
         }
