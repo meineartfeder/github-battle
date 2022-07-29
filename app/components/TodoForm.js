@@ -1,44 +1,45 @@
 import React from "react"
+import PropTypes from 'prop-types'
 import { ThemeConsumer } from '../contexts/theme'
+import { MdAddCircle } from 'react-icons/md'
 
 export default class TodoForm extends React.Component {
-  state = { todo: '' }
+  state = { task: '' }
   handleSubmit = (event) => {
     event.preventDefault()
 
     this.setState({
-      todo: ''
+      task: ''
     })
 
-    this.props.onSubmit(this.state.todo)
+    this.props.addTask(this.state.task)
   }
   handleChange = (event) => {
     this.setState({
-      todo: event.target.value
+      task: event.target.value
     })
   }
   render() {
     return (
       <ThemeConsumer>
         {({ theme }) => ( 
-          <form className='column player' onSubmit={this.handleSubmit}>
-            <label htmlFor="add-todo-input" className='player-label'>Add ToDo
-            </label>
-            <div className='row player-inputs'>
+          <form className='todo-form' onSubmit={this.handleSubmit}>
+            <label htmlFor="add-todo-input" className='todo-form__label'>Add ToDo</label>
+            <div className='row todo-form__inputs'>
               <input
                 id='add-todo-input'
                 type='text'
                 className={`input-${theme}`}
-                placeholder='yep, add it there...'
                 autoComplete='off'
-                value={this.state.todo}
+                value={this.state.task}
                 onChange={this.handleChange}
               />
               <button
-                className={`btn ${() => theme === 'dark' ? 'light' : 'dark'}-btn`}
+                className={`btn ${theme === 'dark' ? 'dark' : 'light'}-btn`}
                 type='submit'
-                disabled={!this.state.todo}>
-                Submit
+                title='Submit'
+                disabled={!this.state.task}>
+                <MdAddCircle size={26} />
             </button>
             </div>
           </form>
@@ -46,4 +47,8 @@ export default class TodoForm extends React.Component {
       </ThemeConsumer>
     )
   }
+}
+
+TodoForm.propTypes = {
+  addTask: PropTypes.func.isRequired
 }
