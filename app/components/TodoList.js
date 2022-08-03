@@ -62,7 +62,7 @@ TodoListItem.propTypes = {
 
 export default class TodoList extends React.Component {
   render() {
-    console.log(this.props.todos);
+    // console.log(this.props.todos);
     const undoneItems = this.props.todos.map((task, index) => {
       if(task.done === false) {
         return (

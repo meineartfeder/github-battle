@@ -29,12 +29,12 @@ Header.defaultProps = {
 
 export default class Todos extends React.Component {
   state = { todoItems: todoItems }
-  componentDidMount () {
-    console.log(todoItems);
-  }
-  componentDidUpdate () {
-    console.log(todoItems);
-  }
+  // componentDidMount () {
+  //   console.log(todoItems);
+  // }
+  // componentDidUpdate () {
+  //   console.log(todoItems);
+  // }
   handleSubmit = (task) => {
     todoItems.push({ 
       id: todoItems.length + 1, 
