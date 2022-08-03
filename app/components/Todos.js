@@ -29,6 +29,12 @@ Header.defaultProps = {
 
 export default class Todos extends React.Component {
   state = { todoItems: todoItems }
+  componentDidMount () {
+    console.log(todoItems);
+  }
+  componentDidUpdate () {
+    console.log(todoItems);
+  }
   handleSubmit = (task) => {
     todoItems.push({ 
       id: todoItems.length + 1, 
@@ -38,7 +44,8 @@ export default class Todos extends React.Component {
 
     this.setState({ todoItems: todoItems }); 
   }
-  handleReset = (id) => {
+  handleDelete = (id) => {
+    console.log(id);
     todoItems.splice(id, 1);
     this.setState({ todoItems: todoItems }); 
   }
@@ -59,7 +66,7 @@ export default class Todos extends React.Component {
       <React.Fragment>
         <Header name={name} />
         <TodoForm addTask={(id, task) => this.handleSubmit(id, task)} />
-        <TodoList todos={todoItems} onDelete={this.handleReset} onDone={this.handleDone} onChange={(id, task) => this.handleChange(id, task)} />
+        <TodoList todos={todoItems} onDelete={this.handleDelete} onDone={this.handleDone} onChange={(id, task) => this.handleChange(id, task)} />
       </React.Fragment>
     )
   }

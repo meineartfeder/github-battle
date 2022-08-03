@@ -369,14 +369,10 @@ li {
 
     .btn-done,
     .btn-clear {
+      cursor: pointer;
+      
       svg {
         fill: var(--color);
-      }
-
-      &:hover {
-        svg {
-          fill: #DB5461;
-        }
       }
     }
 

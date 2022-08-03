@@ -22,8 +22,7 @@ class TodoListItem extends React.Component {
     this.props.onChange(this.props.id, event.target.value)
   }
   render() {
-    const { done } = this.props
-    const { task } = this.state
+    const { task, done } = this.props
     return (
       <li
         className={`todo-list__item${done ? ' todo-list__item--done' : ''}`}
@@ -42,8 +41,7 @@ class TodoListItem extends React.Component {
           className='todo-list__item__input' 
           type="text" 
           value={task} 
-          onChange={this.onItemChange} 
-          readOnly={done}
+          onChange={this.onItemChange}
         />
         <button className='btn-clear' onClick={this.onClickDelete}>
           <MdOutlineDeleteOutline color='#FFFFFF' size={26} />
@@ -64,6 +62,7 @@ TodoListItem.propTypes = {
 
 export default class TodoList extends React.Component {
   render() {
+    console.log(this.props.todos);
     const undoneItems = this.props.todos.map((task, index) => {
       if(task.done === false) {
         return (
