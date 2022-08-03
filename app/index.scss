@@ -338,9 +338,9 @@ li {
   &__item {
     --color: #FFFFFF;
     --bg-color: #3891A6;
-    color: var(--color);
     background-color: var(--bg-color);
     border: 2px solid var(--bg-color);
+    color: var(--color);
     font-size: 16px;
     border-radius: 5px;
     padding: 12px;
@@ -348,6 +348,24 @@ li {
     align-items: center;
     font-weight: bold;
     display: flex;
+    opacity: 0;
+    animation: fadeIn 1000ms forwards;
+
+    &__input {
+      background-color: var(--bg-color);
+      border: 2px solid var(--bg-color);
+      color: var(--color);
+      font-size: 18px;
+      padding: 10px 0;
+      width: 100%;
+      transition: 300ms all ease-in-out;
+
+      &:focus {
+        outline: none;
+        padding-left: 5px;
+        border-bottom-color: var(--color);
+      }
+    }
 
     .btn-done,
     .btn-clear {
@@ -368,9 +386,18 @@ li {
 
     &--done {
       --color: #4C5B5C;
-      --bg-color: #FDE74C;
+      --bg-color: #EFEFEF;
       font-weight: normal;
     }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -397,7 +424,7 @@ li {
 
     &:focus {
       outline: none;
-      border-bottom: 3px solid #E3655B;
+      border-bottom-width: 3px;
     }
   }
 

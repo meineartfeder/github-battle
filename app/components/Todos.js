@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TodoList from './TodoList'
 import TodoForm from './TodoForm'
+import queryString from 'query-string'
 
 const todoItems = []
-todoItems.push({ id: 1, value: "Learn react", done: false });
+todoItems.push({ id: 1, value: "Learn React", done: false });
 todoItems.push({ id: 2, value: "Go shopping", done: false });
 todoItems.push({ id: 3, value: "Buy flowers", done: false });
 todoItems.push({ id: 4, value: "Feed the Cats", done: false });
@@ -29,37 +30,36 @@ Header.defaultProps = {
 export default class Todos extends React.Component {
   state = { todoItems: todoItems }
   handleSubmit = (task) => {
-    todoItems.unshift({ 
+    todoItems.push({ 
       id: todoItems.length + 1, 
       value: task, 
       done: false
     })
 
-    this.setState({
-      todoItems: todoItems
-    })
+    this.setState({ todoItems: todoItems }); 
   }
   handleReset = (id) => {
     todoItems.splice(id, 1);
-    this.setState({
-      todoItems: todoItems
-    })
+    this.setState({ todoItems: todoItems }); 
   }
   handleDone = (id) => {
     var todo = todoItems[id];
-    todoItems.splice(id, 1);
     todo.done = !todo.done;
-    todo.done ? todoItems.push(todo) : todoItems.unshift(todo);
     this.setState({ todoItems: todoItems }); 
+  }
+  handleChange = (id, task) => {
+    todoItems[id].value = task;
+    this.setState({ todoItems: todoItems });
   }
   render() {
     const { todoItems } = this.state
+    const { name } = queryString.parse(this.props.location.search)
 
     return (
       <React.Fragment>
-        <Header />
-        <TodoForm addTask={(task) => this.handleSubmit(task)} />
-        <TodoList todos={todoItems} onDelete={this.handleReset} onDone={this.handleDone} />
+        <Header name={name} />
+        <TodoForm addTask={(id, task) => this.handleSubmit(id, task)} />
+        <TodoList todos={todoItems} onDelete={this.handleReset} onDone={this.handleDone} onChange={(id, task) => this.handleChange(id, task)} />
       </React.Fragment>
     )
   }
