@@ -37,6 +37,14 @@ export default function Nav () {
                 Todos
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to='/hackernews'
+                activeStyle={activeStyle}
+                className="nav-link">
+                Hackernews
+              </NavLink>
+            </li>
           </ul>
           <button
             style={{fontSize: 30}}

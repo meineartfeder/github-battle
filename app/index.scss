@@ -1,5 +1,17 @@
 $hover-color: #F79D84;
 
+:root {
+  --black: black;
+  --red: rgb(187, 46, 31);
+  --bg-grey: #EFEFEF;
+}
+
+.dark {
+  --black: #bebebe;
+  --red: #bebebe;
+  --bg-grey: #333333;
+}
+
 /* Hiding class, making content visible only to screen readers but not visually */
 /* "sr" meaning "screen-reader" */
 
@@ -101,6 +113,10 @@ li {
 
 .space-between {
   justify-content: space-between;
+}
+
+.header {
+  margin-bottom: 5px;
 }
 
 .header-lg {
@@ -441,3 +457,37 @@ li {
   }
 }
 
+.hackernews-list {
+  &__item {
+    color: grey;
+    margin: 20px 0;
+
+    a {
+      color: var(--black);
+
+      &.article-link {
+        color: var(--red);
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 5px;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.meta-info-light {
+  color: gray;
+  margin-top: 5px;
+
+  a {
+    color: var(--black);
+  }
+}
+
+.comment {
+  background-color: var(--bg-grey);
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
