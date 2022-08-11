@@ -10,6 +10,10 @@ const Popular = React.lazy(() => import('./components/Popular'))
 const Battle = React.lazy(() => import('./components/Battle'))
 const Results = React.lazy(() => import('./components/Results'))
 const Todos = React.lazy(() => import('./components/Todos'))
+const HackerNewsTopArticles = React.lazy(() => import('./components/hackernews/TopArticles'))
+const HackerNewsNewArticles = React.lazy(() => import('./components/hackernews/NewArticles'))
+const HackerNewsUser = React.lazy(() => import('./components/hackernews/User'))
+const HackerNewsPost = React.lazy(() => import('./components/hackernews/Post'))
 
 const container = document.getElementById('app');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
@@ -42,6 +46,11 @@ class App extends React.Component {
                   <Route exact path='/battle' component={Battle} />
                   <Route path='/battle/results' component={Results} />
                   <Route path='/todos' component={Todos} />
+                  <Route exact path='/hackernews' component={HackerNewsTopArticles} />
+                  <Route path='/hackernews/top' component={HackerNewsTopArticles} />
+                  <Route path='/hackernews/new' component={HackerNewsNewArticles} />
+                  <Route path='/hackernews/user' component={HackerNewsUser} />
+                  <Route path='/hackernews/post' component={HackerNewsPost} />
                   <Route component={() => <h1>404 - Page not found!</h1>} />
                 </Switch>
               </React.Suspense>
