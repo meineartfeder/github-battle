@@ -13,7 +13,7 @@ export default function Nav() {
           <NavLink
             to='/hackernews'
             activeStyle={activeStyle}
-            className="nav-link">
+            className="nav-link" exact>
             Top
           </NavLink>
         </li>
