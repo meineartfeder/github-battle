@@ -47,7 +47,6 @@ class App extends React.Component {
                   <Route path='/battle/results' component={Results} />
                   <Route path='/todos' component={Todos} />
                   <Route exact path='/hackernews' component={HackerNewsTopArticles} />
-                  <Route path='/hackernews/top' component={HackerNewsTopArticles} />
                   <Route path='/hackernews/new' component={HackerNewsNewArticles} />
                   <Route path='/hackernews/user' component={HackerNewsUser} />
                   <Route path='/hackernews/post' component={HackerNewsPost} />

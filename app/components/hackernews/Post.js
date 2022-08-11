@@ -49,7 +49,7 @@ export default class Post extends React.Component {
       <React.Fragment>
         <Nav />
         <PostDetails post={post} loading={loading} />
-        {post.descendants > 0 ? <PostComments comments={post.kids} /> : null}
+        {post.descendants > 0 ? <PostComments comments={post.kids} /> : <p className="center-text">No comments posted yet.</p>}
       </React.Fragment>
     )
   }

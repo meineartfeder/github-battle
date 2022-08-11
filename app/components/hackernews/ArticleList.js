@@ -1,5 +1,6 @@
 import React from "react"
 import UserMetaInfo from './UserMetaInfo'
+import PropTypes from 'prop-types'
 
 export default function Articles({ posts }) {
   return (
@@ -16,4 +17,8 @@ export default function Articles({ posts }) {
       })}
     </ul>
   )
+}
+
+Articles.propTypes = {
+  posts: PropTypes.array.isRequired
 }
