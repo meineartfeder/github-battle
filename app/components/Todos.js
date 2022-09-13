@@ -13,61 +13,106 @@ todoItems.push({ id: 5, value: "Cleanup Bathroom", done: false });
 todoItems.push({ id: 6, value: "Answer Mails", done: true });
 
 
-function Header ({ name }) {
+function Header ({ name = '' }) {
   return (
     <h1>{name} ToDos</h1>
   )
 }
 
 Header.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string
 }
 
-Header.defaultProps = {
-  name: ''
-}
+export default function Todos ({ location }) {
+  const [ todos, setTodos ] = React.useState(todoItems)
+  const { name } = queryString.parse(location.search)
 
-export default class Todos extends React.Component {
-  state = { todoItems: todoItems }
-  // componentDidMount () {
-  //   console.log(todoItems);
-  // }
-  // componentDidUpdate () {
-  //   console.log(todoItems);
-  // }
-  handleSubmit = (task) => {
-    todoItems.push({ 
-      id: todoItems.length + 1, 
-      value: task, 
-      done: false
+  const handleSubmit = (task) => {
+    setTodos((todos) => {
+      return [...todos, {
+        id: todos.length + 1,
+        value: task,
+        done: false
+      }]
     })
-
-    this.setState({ todoItems: todoItems }); 
   }
-  handleDelete = (id) => {
-    console.log(id);
-    todoItems.splice(id, 1);
-    this.setState({ todoItems: todoItems }); 
+  const handleDelete = (id) => {
+    todos.splice(id, 1);
+    setTodos((todos) => {
+      return [...todos]
+    });
   }
-  handleDone = (id) => {
-    var todo = todoItems[id];
+  const handleDone = (id) => {
+    var todo = todos[id];
     todo.done = !todo.done;
-    this.setState({ todoItems: todoItems }); 
-  }
-  handleChange = (id, task) => {
-    todoItems[id].value = task;
-    this.setState({ todoItems: todoItems });
-  }
-  render() {
-    const { todoItems } = this.state
-    const { name } = queryString.parse(this.props.location.search)
 
-    return (
-      <React.Fragment>
-        <Header name={name} />
-        <TodoForm addTask={(id, task) => this.handleSubmit(id, task)} />
-        <TodoList todos={todoItems} onDelete={this.handleDelete} onDone={this.handleDone} onChange={(id, task) => this.handleChange(id, task)} />
-      </React.Fragment>
-    )
+    setTodos((todos) => {
+      return [...todos]
+    });
   }
+   const handleChange = (id, task) => {
+    todos[id].value = task;
+
+    setTodos((todos) => {
+      return [...todos]
+    });
+  }
+
+  return (
+    <React.Fragment>
+      <Header name={name} />
+      <TodoForm 
+        addTask={handleSubmit}
+      />
+      <TodoList 
+        todos={todos} 
+        onDelete={handleDelete} 
+        onDone={handleDone} 
+        onChange={handleChange} 
+      />
+    </React.Fragment>
+  )
 }
+
+// export default class Todos extends React.Component {
+//   state = { todoItems: todoItems }
+//   componentDidMount() {
+//     console.log(todoItems)
+//   }
+//   handleSubmit = (task) => {
+//     todoItems.push({ 
+//       id: todoItems.length + 1, 
+//       value: task, 
+//       done: false
+//     })
+
+//     this.setState({ todoItems: todoItems }); 
+//   }
+//   handleDelete = (id) => {
+//     console.log(id, todoItems);
+//     todoItems.splice(id, 1);
+//     this.setState({ todoItems: todoItems }); 
+//   }
+//   handleDone = (id) => {
+//     console.log(id, todoItems);
+//     var todo = todoItems[id];
+//     todo.done = !todo.done;
+//     this.setState({ todoItems: todoItems }); 
+//   }
+//   handleChange = (id, task) => {
+//     todoItems[id].value = task;
+//     this.setState({ todoItems: todoItems });
+//   }
+//   render() {
+//     const { todoItems } = this.state
+//     const { name } = queryString.parse(this.props.location.search)
+
+//     return (
+//       <React.Fragment>
+//         <Header name={name} />
+//         <TodoForm addTask={this.handleSubmit} />
+//         <TodoList todos={todoItems} onDelete={this.handleDelete} onDone={this.handleDone} onChange={this.handleChange} />
+//       </React.Fragment>
+//     )
+//   }
+// }

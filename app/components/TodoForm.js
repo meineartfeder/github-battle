@@ -1,52 +1,45 @@
 import React from "react"
 import PropTypes from 'prop-types'
-import { ThemeConsumer } from '../contexts/theme'
+import ThemeContext from '../contexts/theme'
 import { MdAddCircle } from 'react-icons/md'
 
-export default class TodoForm extends React.Component {
-  state = { task: '' }
-  handleSubmit = (event) => {
-    event.preventDefault()
+export default function TodoForm ({ addTask }) {
+  const [ task, setTask ] = React.useState('')
+  const theme = React.useContext(ThemeContext)
 
-    this.setState({
-      task: ''
-    })
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    this.props.addTask(this.state.task)
+    addTask(task)
+    setTask('')
   }
-  handleChange = (event) => {
-    this.setState({
-      task: event.target.value
-    })
+
+  const handleChange = (e) => {
+    setTask(e.target.value)
   }
-  render() {
-    return (
-      <ThemeConsumer>
-        {({ theme }) => ( 
-          <form className='todo-form' onSubmit={this.handleSubmit}>
-            <label htmlFor="add-todo-input" className='todo-form__label'>Add ToDo</label>
-            <div className='row todo-form__inputs'>
-              <input
-                id='add-todo-input'
-                type='text'
-                className={`input-${theme}`}
-                autoComplete='off'
-                value={this.state.task}
-                onChange={this.handleChange}
-              />
-              <button
-                className={`btn ${theme === 'dark' ? 'dark' : 'light'}-btn`}
-                type='submit'
-                title='Submit'
-                disabled={!this.state.task}>
-                <MdAddCircle size={26} />
-            </button>
-            </div>
-          </form>
-        )}
-      </ThemeConsumer>
-    )
-  }
+
+  return (
+    <form className="todo-form" onSubmit={handleSubmit}>
+      <label htmlFor="add-todo-input" className="todo-form__label">Add ToDo</label>
+      <div className='row todo-form__inputs'>
+        <input
+          id='add-todo-input'
+          type='text'
+          className={`input-${theme}`}
+          autoComplete='off'
+          value={task}
+          onChange={handleChange}
+        />
+        <button
+          className={`btn ${theme === 'dark' ? 'dark' : 'light'}-btn`}
+          type='submit'
+          title='Submit'
+          disabled={!task}>
+          <MdAddCircle size={26} />
+        </button>
+      </div>
+    </form>
+  )
 }
 
 TodoForm.propTypes = {
