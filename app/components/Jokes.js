@@ -38,20 +38,23 @@ function jokesReducer (state, action) {
 
 export default function Jokes () {
   const theme = React.useContext(ThemeContext)
-  const [ newJoke, setNewJoke ] = React.useState(0);
   const [ state, dispatch ] = React.useReducer(jokesReducer, {
     joke: null,
     error: null,
     loading: true,
   })
 
-  React.useEffect(() => {
+  const getRandomJoke = () => {
     dispatch({ type: 'loading' });
 
     fetchRandomJoke()
       .then((joke) => dispatch({ type: 'success', joke: joke.joke }))
       .catch((message) => dispatch({ type: 'error', error: message }))
-  }, [newJoke]);
+  }
+
+  React.useEffect(() => {
+    getRandomJoke();
+  }, []);
 
   const { joke, error, loading } = state
   const { name } = queryString.parse(location.search)
@@ -71,7 +74,7 @@ export default function Jokes () {
         : <React.Fragment>
             <Joke joke={joke} />
             <button 
-              onClick={() => setNewJoke(newJoke + 1)}
+              onClick={() => getRandomJoke()}
               className={`btn ${theme === 'dark' ? 'light-btn' : 'dark-btn'} btn-space`}
               >
                 New Joke
