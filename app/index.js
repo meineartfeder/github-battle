@@ -14,6 +14,7 @@ const HackerNewsTopArticles = React.lazy(() => import('./components/hackernews/T
 const HackerNewsNewArticles = React.lazy(() => import('./components/hackernews/NewArticles'))
 const HackerNewsUser = React.lazy(() => import('./components/hackernews/User'))
 const HackerNewsPost = React.lazy(() => import('./components/hackernews/Post'))
+const Jokes = React.lazy(() => import('./components/Jokes'))
 
 const container = document.getElementById('app');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
@@ -44,6 +45,7 @@ function App () {
                 <Route path='/hackernews/new' component={HackerNewsNewArticles} />
                 <Route path='/hackernews/user' component={HackerNewsUser} />
                 <Route path='/hackernews/post' component={HackerNewsPost} />
+                <Route path='/jokes' component={Jokes} />
                 <Route component={() => <h1>404 - Page not found!</h1>} />
               </Switch>
             </React.Suspense>

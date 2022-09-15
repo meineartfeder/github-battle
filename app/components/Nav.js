@@ -45,6 +45,14 @@ export default function Nav ({ toggleTheme }) {
             Hackernews
           </NavLink>
         </li>
+        <li>
+          <NavLink
+            to='/jokes'
+            activeStyle={activeStyle}
+            className="nav-link">
+            Jokes
+          </NavLink>
+        </li>
       </ul>
       <button
         style={{fontSize: 30}}
