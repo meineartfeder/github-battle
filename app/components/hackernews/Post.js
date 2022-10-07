@@ -4,53 +4,65 @@ import queryString from "query-string"
 import Nav from "./Nav"
 import Loading from "../Loading"
 import PostComments from "./PostComments"
-
 import PostDetails from "./PostDetails"
 
-export default class Post extends React.Component {
-  state = {
-    loading: true,
-    error: false,
-    post: {}
+function postReducer(state, action) {
+  if (action.type === 'success') {
+    return {
+      post: action.post,
+      error: null,
+      loading: false
+    }
+  } else if (action.type === 'loading') {
+    return {
+      post: null,
+      error: null,
+      loading: true
+    }
+  } else if (action.type === 'error') {
+    return {
+      ...state,
+      error: action.message,
+      loading: false
+    }
+  } else {
+    throw new Error(`That action type isn't supported.`)
   }
-  componentDidMount() {
-    const { id } = queryString.parse(this.props.location.search)
+}
+
+export default function Post({ location }) {
+  const [state, dispatch] = React.useReducer(postReducer, {
+    post: null,
+    error: null,
+    loading: true,
+  })
+  const { id } = queryString.parse(location.search)
+
+  React.useEffect(() => {
+    dispatch({ type: 'loading' })
 
     fetchItem(id)
-      .then((post) => {
-        this.setState({
-          post: post,
-          loading: false
-        })
-      })
-      .catch(() => {
-        console.warn('Error fetching post: ', error)
+      .then((post) => dispatch({ type: 'success', post: post }))
+      .catch((message) => dispatch({ type: 'error', error: message }))
+  }, [id])
 
-        this.setState({
-          loading: false,
-          error: 'There was an error fetching the post.'
-        })
-      })
+  const { loading, post, error } = state
+
+  if (loading === true) {
+    return <Loading />
   }
-  render() {
-    const { loading, post, error } = this.state
 
-    if(loading === true) {
-      return <Loading />
-    }
-
-    if (error) {
-      return (
-        <p className="center-text error">{error}</p>
-      )
-    }
-
+  if (error) {
     return (
-      <React.Fragment>
-        <Nav />
-        <PostDetails post={post} loading={loading} />
-        {post.descendants > 0 ? <PostComments comments={post.kids} /> : <p className="center-text">No comments posted yet.</p>}
-      </React.Fragment>
+      <p className="center-text error">{error}</p>
     )
   }
+
+  return (
+    <React.Fragment>
+      <Nav />
+      <PostDetails post={post} loading={loading} />
+      {post.descendants > 0 ? <PostComments comments={post.kids} /> : <p className="center-text">No comments posted yet.</p>}
+    </React.Fragment>
+  )
 }
