@@ -4,7 +4,7 @@ import Loading from "./Loading";
 import ThemeContext from "../contexts/theme";
 import queryString from "query-string";
 
-function Joke ({ joke }) {
+function JokeSection({ joke }: { joke: string }) {
   return (
     <div className="center-text">
       <p style={{fontSize: '50px', fontStyle: 'italic'}}>"{joke}"</p>
@@ -12,7 +12,24 @@ function Joke ({ joke }) {
   )
 }
 
-function jokesReducer (state, action) {
+type JokeAction = {
+  type: "success",
+  joke: string,
+} | {
+  type: "loading",
+  loading: boolean
+} | {
+  type: "error",
+  message: string
+}
+
+interface JokeState {
+  joke: null | string;
+  error: null | string;
+  loading: boolean
+}
+
+function jokesReducer(state: JokeState, action: JokeAction): JokeState {
   if (action.type === 'success') {
     return {
       joke: action.joke,
@@ -45,11 +62,11 @@ export default function Jokes () {
   })
 
   const getRandomJoke = () => {
-    dispatch({ type: 'loading' });
+    dispatch({ type: 'loading', loading: true });
 
-    fetchRandomJoke()
+    fetchRandomJoke("https://icanhazdadjoke.com/")
       .then((joke) => dispatch({ type: 'success', joke: joke.joke }))
-      .catch((message) => dispatch({ type: 'error', error: message }))
+      .catch(({message}) => dispatch({ type: 'error', message }))
   }
 
   React.useEffect(() => {
@@ -69,10 +86,10 @@ export default function Jokes () {
         ? <h1>One Dad Joke for {name}!</h1>
         : <h1>One Dad Joke for you!</h1>}
       
-      {loading
+      {loading || !joke
         ? <Loading text="Loading Joke" />
         : <React.Fragment>
-            <Joke joke={joke} />
+            <JokeSection joke={joke} />
             <button 
               onClick={() => getRandomJoke()}
               className={`btn ${theme === 'dark' ? 'light-btn' : 'dark-btn'} btn-space`}

@@ -1,20 +1,22 @@
-import React from "react"
+import React, { ChangeEvent, FormEvent } from "react"
 import PropTypes from 'prop-types'
 import ThemeContext from '../contexts/theme'
 import { MdAddCircle } from 'react-icons/md'
 
-export default function TodoForm ({ addTask }) {
+export default function TodoForm ({ addTask }: {
+  addTask: (task: string) => void
+}) {
   const [ task, setTask ] = React.useState('')
   const theme = React.useContext(ThemeContext)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:FormEvent) => {
     e.preventDefault();
 
     addTask(task)
     setTask('')
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value)
   }
 

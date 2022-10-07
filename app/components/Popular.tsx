@@ -1,13 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { fetchPopularRepos } from '../utils/api'
+import { fetchPopularRepos, Repo } from '../utils/api'
 import { FaUser, FaStar, FaCodeBranch, FaExclamationTriangle } from 'react-icons/fa'
 import Card from './Card'
 import Loading from './Loading'
 import Tooltip from './Tooltip'
 
-function LanguagesNav({ selected, onUpdateLanguage }) {
-  const languages = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python']
+type Languages = 'All'|'JavaScript'|'Ruby'|'Java'|'CSS'|'Python';
+
+function LanguagesNav({ selected, onUpdateLanguage }: { 
+  selected: Languages, 
+  onUpdateLanguage: (lang: Languages) => void
+}) {
+  const languages: Languages[] = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python']
 
   return (
     <ul className='flex-center'>
@@ -15,7 +20,7 @@ function LanguagesNav({ selected, onUpdateLanguage }) {
         <li key={language}>
           <button
             className='btn-clear nav-link'
-            style={language === selected ? { color: 'rgb(187, 46, 31)' } : null}
+            style={language === selected ? { color: 'rgb(187, 46, 31)' } : undefined}
             onClick={() => onUpdateLanguage(language)}>
             {language}
           </button>
@@ -30,7 +35,7 @@ LanguagesNav.propTypes = {
   onUpdateLanguage: PropTypes.func.isRequired
 }
 
-function ReposGrid ({ repos }) {
+function ReposGrid ({ repos }: {repos: Repo[]}) {
   return (
     <ul className='grid space-around'>
       {repos.map((repo, index) => {
@@ -49,7 +54,7 @@ function ReposGrid ({ repos }) {
                 <li>
                   <Tooltip text="Github user">
                     <FaUser color='rgb(255, 191, 116)' size={22} />
-                    <a htref={`https://github.com/${login}`}>
+                    <a href={`https://github.com/${login}`}>
                       {login}
                     </a>
                   </Tooltip>
@@ -79,7 +84,20 @@ ReposGrid.propTypes = {
   repos: PropTypes.array.isRequired
 }
 
-function popularReducer (state, action) {
+type PopularReducerActions = {
+  type: "success",
+  selectedLanguage: Languages,
+  repos: Repo[]
+} | {
+  type: "error",
+  error: Error
+}
+
+interface PopularReducerState extends Partial<Record<Languages, Repo[]>> {
+  error: null | string;
+}
+
+function popularReducer(state: PopularReducerState, action: PopularReducerActions) {
   if (action.type === 'success') {
     return {
       ...state,
@@ -97,13 +115,13 @@ function popularReducer (state, action) {
 }
 
 export default function Popular () {
-  const [ selectedLanguage, setSelectedLanguage ] = React.useState('All')
+  const [ selectedLanguage, setSelectedLanguage ] = React.useState<Languages>('All')
   const [ state, dispatch ] = React.useReducer(
     popularReducer,
     { error: null }
   )
 
-  const fetchedLanguages = React.useRef([])
+  const fetchedLanguages = React.useRef<string[]>([])
 
   React.useEffect(() => {
     if (fetchedLanguages.current.includes(selectedLanguage) === false) {
@@ -119,6 +137,8 @@ export default function Popular () {
   const isLoading = () => {
     return !state[selectedLanguage] && state.error === null
   }
+
+  const seletedRepos = state[selectedLanguage];
   return (
     <React.Fragment>
       <LanguagesNav
@@ -130,7 +150,7 @@ export default function Popular () {
 
       {state.error && <p className='center-text error'>{state.error}</p>}
 
-      {state[selectedLanguage] && <ReposGrid repos={state[selectedLanguage]} />}
+      {seletedRepos && <ReposGrid repos={state[selectedLanguage]} />}
     </React.Fragment>
   )
 }

@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import PropTypes from 'prop-types'
 import ThemeContext from '../contexts/theme'
 
-export default function Card ({ header, subheader, avatar, href, name, children }) {
+export default function Card ({ header, subheader, avatar, href, name, children } : {
+  header: string,
+  subheader?: string,
+  avatar: string,
+  href: string,
+  name: string,
+  children: ReactNode
+}) {
   const theme = React.useContext(ThemeContext)
 
   return (

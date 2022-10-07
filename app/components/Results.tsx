@@ -1,5 +1,5 @@
 import React from 'react'
-import { battle } from '../utils/api'
+import { battle, User, Player } from '../utils/api'
 import { FaCompass, FaBriefcase, FaUsers, FaUserFriends, FaCode, FaUser } from 'react-icons/fa'
 import Card from './Card'
 import PropTypes from 'prop-types'
@@ -8,7 +8,7 @@ import Tooltip from './Tooltip'
 import queryString from 'query-string'
 import { Link } from 'react-router-dom'
 
-function ProfileList ({ profile }) {
+function ProfileList({ profile }: { profile: User }) {
   return (
     <ul className='card-list'>
       {profile.name && (
@@ -49,7 +49,23 @@ ProfileList.propTypes = {
   profile: PropTypes.object.isRequired,
 }
 
-function battleReducer (state, action) {
+type BattleAction = {
+  type: "success",
+  winner: Player,
+  loser: Player
+} | {
+  type: "error",
+  message: string
+}
+
+interface BattleState {
+  loading: boolean;
+  error: null | string;
+  winner: Player | null;
+  loser: Player | null;
+}
+
+function battleReducer(state: BattleState, action: BattleAction): BattleState {
   if (action.type === 'success') {
     return {
       winner: action.winner,
@@ -68,7 +84,7 @@ function battleReducer (state, action) {
   }
 }
 
-export default function Results ({ location }) {
+export default function Results ({ location }: {location:{search:string}}) {
   const { playerOne, playerTwo } = queryString.parse(location.search)
   const [ state, dispatch ] = React.useReducer(
     battleReducer,
@@ -81,14 +97,14 @@ export default function Results ({ location }) {
   )
 
   React.useEffect(() => {
-    battle([playerOne, playerTwo])
+    battle([playerOne, playerTwo] as [string, string])
       .then((players) => dispatch({ type: 'success', winner: players[0], loser: players[1] }))
-      .catch((message) => dispatch({ type: 'error', error: message }))
+      .catch(( {message} ) => dispatch({ type: 'error', message }))
   }, [playerOne, playerTwo])
 
   const { winner, loser, error, loading } = state
 
-  if (loading === true) {
+  if (loading === true || !winner || !loser) {
     return <Loading />
   }
 

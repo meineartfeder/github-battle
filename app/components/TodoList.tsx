@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import PropTypes from 'prop-types'
 import { MdOutlineDeleteOutline, MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md'
 
-function TodoListItem({ id, todo, done, onDelete, onDone, onChange }) {
+function TodoListItem({ id, todo, done, onDelete, onDone, onChange }: {
+  id: number,
+  todo: string,
+  done: boolean,
+  onDelete: (id: number) => void,
+  onDone: (id: number) => void,
+  onChange: (id: number, target: string) => void,
+}) {
   const [ value, setValue ] = React.useState(todo);
 
   React.useEffect(() => {
@@ -15,7 +22,7 @@ function TodoListItem({ id, todo, done, onDelete, onDone, onChange }) {
   const onClickDone = () => {
     onDone(id)
   }
-  const onItemChange = (e) => {
+  const onItemChange = (e:ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
 
     onChange(id, e.target.value)
@@ -57,7 +64,18 @@ TodoListItem.propTypes = {
   onChange: PropTypes.func.isRequired
 }
 
-export default function TodoList ({ todos, onDelete, onDone, onChange }) {
+export interface TodoItem {
+  id: number,
+  value: string,
+  done: boolean
+}
+
+export default function TodoList({ todos, onDelete, onDone, onChange }: {
+  todos: TodoItem[],
+  onDelete: (id: number) => void,
+  onDone: (id: number) => void,
+  onChange: (id: number, target: string) => void,
+}) {
   return (
     <React.Fragment>
       <ul className='todo-list'>

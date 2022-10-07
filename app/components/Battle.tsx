@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ChangeEvent, FormEvent} from 'react'
 import { FaUserFriends, FaFighterJet, FaTrophy, FaTimesCircle } from 'react-icons/fa'
 import PropTypes from 'prop-types'
 import ThemeContext from '../contexts/theme'
@@ -30,16 +30,16 @@ function Instructions () {
   )
 }
 
-function PlayerInput ({ onSubmit, label }) {
+function PlayerInput ({ onSubmit, label }: { onSubmit: (username:string) => void, label: string }) {
   const [ username, setUsername ] = React.useState('')
   const theme = React.useContext(ThemeContext)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:FormEvent) => {
     e.preventDefault()
 
     onSubmit(username)
   }
-  const handleChange = (e) => {
+  const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value)
   }
 
@@ -75,7 +75,11 @@ PlayerInput.propTypes = {
   label: PropTypes.string.isRequired
 }
 
-function PlayerPreview ({ username, onReset, label }) {
+function PlayerPreview ({ username, onReset, label }: {
+  username: string,
+  onReset: () => void,
+  label: string
+}) {
   const theme = React.useContext(ThemeContext)
 
   return (
@@ -114,14 +118,14 @@ PlayerPreview.propTypes = {
 }
 
 export default function Battle () {
-  const [ playerOne, setPlacerOne ] = React.useState(null)
-  const [ playerTwo, setPlacerTwo ] = React.useState(null)
+  const [ playerOne, setPlacerOne ] = React.useState<string|null>(null)
+  const [ playerTwo, setPlacerTwo ] = React.useState<string|null>(null)
 
-  const handleSubmit = (id, player) => id === 'playerOne' 
+  const handleSubmit = (id:string, player:string) => id === 'playerOne' 
     ? setPlacerOne(player) 
     : setPlacerTwo(player)
   
-  const handleReset = (id) => id === 'playerOne' 
+  const handleReset = (id:string) => id === 'playerOne' 
     ? setPlacerOne(null) 
     : setPlacerTwo(null)
 

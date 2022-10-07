@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TodoList from './TodoList'
+import TodoList, { TodoItem } from './TodoList'
 import TodoForm from './TodoForm'
 import queryString from 'query-string'
 
-const todoItems = []
+const todoItems: TodoItem[] = [];
 todoItems.push({ id: 1, value: "Learn React", done: false });
 todoItems.push({ id: 2, value: "Go shopping", done: false });
 todoItems.push({ id: 3, value: "Buy flowers", done: false });
@@ -13,7 +13,7 @@ todoItems.push({ id: 5, value: "Cleanup Bathroom", done: false });
 todoItems.push({ id: 6, value: "Answer Mails", done: true });
 
 
-function Header ({ name = '' }) {
+function Header ({ name = "" }) {
   return (
     <h1>{name} ToDos</h1>
   )
@@ -23,11 +23,11 @@ Header.propTypes = {
   name: PropTypes.string
 }
 
-export default function Todos ({ location }) {
+export default function Todos ({ location }: {location: {search: string}}) {
   const [ todos, setTodos ] = React.useState(todoItems)
-  const { name } = queryString.parse(location.search)
+  const { name } = queryString.parse(location.search);
 
-  const handleSubmit = (task) => {
+  const handleSubmit = (task: string) => {
     setTodos((todos) => {
       return [...todos, {
         id: todos.length + 1,
@@ -36,13 +36,13 @@ export default function Todos ({ location }) {
       }]
     })
   }
-  const handleDelete = (id) => {
+  const handleDelete = (id: number) => {
     todos.splice(id, 1);
     setTodos((todos) => {
       return [...todos]
     });
   }
-  const handleDone = (id) => {
+  const handleDone = (id: number) => {
     var todo = todos[id];
     todo.done = !todo.done;
 
@@ -50,7 +50,7 @@ export default function Todos ({ location }) {
       return [...todos]
     });
   }
-   const handleChange = (id, task) => {
+   const handleChange = (id: number, task: string) => {
     todos[id].value = task;
 
     setTodos((todos) => {
@@ -60,7 +60,7 @@ export default function Todos ({ location }) {
 
   return (
     <React.Fragment>
-      <Header name={name} />
+      <Header name={name as string} />
       <TodoForm 
         addTask={handleSubmit}
       />

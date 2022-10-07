@@ -17,7 +17,7 @@ const HackerNewsPost = React.lazy(() => import('./components/hackernews/Post'))
 const Jokes = React.lazy(() => import('./components/Jokes'))
 
 const container = document.getElementById('app');
-const root = createRoot(container); // createRoot(container!) if you use TypeScript
+const root = createRoot(container!); // createRoot(container!) if you use TypeScript
 
 // Component
 // State
