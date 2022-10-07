@@ -3,6 +3,8 @@ import DateTime from "./DateTime"
 import PropTypes from "prop-types"
 
 export default function UserDetails ({ user }) {
+  console.log(user);
+  
     return (
       <React.Fragment>
         <h1 className="header">
