@@ -1,9 +1,13 @@
 import React from "react"
+import { User } from "../../utils/api.hackernews"
 import { Link } from "react-router-dom"
 import DateTime from "./DateTime"
 import PropTypes from "prop-types"
 
-function Comments ({ id, descendants }) {
+function Comments ({ id, descendants }: {
+  id: string,
+  descendants: number
+}) {
   return (
     <React.Fragment>
       <span> with <Link to={{ pathname: '/hackernews/post', search: `?id=${id}` }}>{descendants} comments</Link></span>
@@ -12,7 +16,7 @@ function Comments ({ id, descendants }) {
 }
 
 Comments.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   descendants: PropTypes.number
 }
 
@@ -20,7 +24,13 @@ Comments.defaultProps = {
   descendants: 0
 }
 
-export default function UserMetaInfo({ id, by, descendants, time, showComments }) {
+export default function UserMetaInfo({ id, by, descendants = 0, time, showComments = false }: {
+  id: string,
+  by: string,
+  descendants?: number,
+  time: number,
+  showComments?: boolean
+}) {
   return (
     <div className="meta-info-light">
       by <Link to={{ pathname: '/hackernews/user', search: `?id=${by}` }}>{by}</Link> <DateTime timestamp={time} /> 
@@ -30,11 +40,11 @@ export default function UserMetaInfo({ id, by, descendants, time, showComments }
 }
 
 UserMetaInfo.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   by: PropTypes.string.isRequired,
   descendants: PropTypes.number,
   time: PropTypes.number.isRequired,
-  showComments: PropTypes.bool.isRequired
+  showComments: PropTypes.bool
 }
 
 UserMetaInfo.defaultProps = {

@@ -1,10 +1,27 @@
 import React from "react"
-import { fetchPosts } from "../../utils/api.hackernews"
+import { fetchPosts, Post } from "../../utils/api.hackernews"
 import Loading from "../Loading"
 import ArticleList from "./ArticleList"
 import PropTypes from "prop-types";
 
-function postsReducer(state, action) {
+type PostsActions = {
+  type: "success",
+  posts: Post[],
+} | {
+  type: "loading",
+  loading: boolean
+} | {
+  type: "error",
+  error: string
+}
+
+interface PostsState {
+  posts: null | Post[];
+  loading: boolean;
+  error: null | string;
+}
+
+function postsReducer(state: PostsState, action: PostsActions) {
   if (action.type === 'success') {
     return {
       posts: action.posts,
@@ -20,14 +37,14 @@ function postsReducer(state, action) {
   } else if (action.type === 'error') {
     return {
       ...state,
-      error: action.message,
+      error: action.error,
       loading: false
     }
   } else {
     throw new Error(`That action type isn't supported.`)
   }
 }
-export default function UserPosts({ userPosts }) {
+export default function UserPosts({ userPosts }: { userPosts: string[] }) {
   const [state, dispatch] = React.useReducer(postsReducer, {
     posts: null,
     error: null,
@@ -36,11 +53,11 @@ export default function UserPosts({ userPosts }) {
   const only30FirstPosts = userPosts.slice(0, 30);
 
   React.useEffect(() => {
-    dispatch({ type: 'loading' })
+    dispatch({ type: 'loading', loading: true })
 
     fetchPosts(only30FirstPosts)
       .then((posts) => dispatch({ type: 'success', posts: posts }))
-      .catch((message) => dispatch({ type: 'error', error: message }))
+      .catch((error) => dispatch({ type: 'error', error: error }))
   }, [userPosts])
 
   const { loading, posts, error } = state
@@ -49,7 +66,7 @@ export default function UserPosts({ userPosts }) {
     return <Loading text="Fetching Posts" />
   }
 
-  if (error) {
+  if (error || !posts) {
     return (
       <p className="center-text error">{error}</p>
     )

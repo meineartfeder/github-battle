@@ -1,9 +1,13 @@
 import React from "react"
 import UserMetaInfo from "./UserMetaInfo"
+import { Post } from "../../utils/api.hackernews"
 import PropTypes from "prop-types"
 import Loading from "../Loading"
 
-export default function PostDetails ({ post, loading }) {
+export default function PostDetails ({ post, loading }: {
+  post: Post,
+  loading: boolean
+}) {
     if (loading === true) {
       return <Loading />
     }

@@ -1,10 +1,19 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { fetchComments } from "../../utils/api.hackernews"
+import { fetchComments, Post } from "../../utils/api.hackernews"
 import Loading from "../Loading"
 import UserMetaInfo from "./UserMetaInfo"
 
-export default class PostComments extends React.Component {
+interface PostCommentsProps {
+  comments: string[];
+}
+
+interface PostCommentsState {
+  loading: boolean;
+  comments: Post[];
+}
+
+export default class PostComments extends React.Component<PostCommentsProps, PostCommentsState> {
   state = {
     loading: true,
     comments: []

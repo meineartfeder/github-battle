@@ -1,8 +1,9 @@
 import React from "react"
 import UserMetaInfo from './UserMetaInfo'
+import { Post } from "../../utils/api.hackernews"
 import PropTypes from 'prop-types'
 
-export default function Articles({ posts }) {
+export default function Articles({ posts }: { posts: Post[]}) {
   return (
     <ul className="hackernews-list">
       {posts.map((post, index) => {

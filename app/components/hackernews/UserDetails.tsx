@@ -1,10 +1,9 @@
 import React from "react"
+import { User } from "../../utils/api.hackernews"
 import DateTime from "./DateTime"
 import PropTypes from "prop-types"
 
-export default function UserDetails ({ user }) {
-  console.log(user);
-  
+export default function UserDetails ({ user }: {user: User}) {
     return (
       <React.Fragment>
         <h1 className="header">

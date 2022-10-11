@@ -20,7 +20,7 @@ type JokeAction = {
   loading: boolean
 } | {
   type: "error",
-  message: string
+  error: string
 }
 
 interface JokeState {
@@ -45,7 +45,7 @@ function jokesReducer(state: JokeState, action: JokeAction): JokeState {
   } else if (action.type === 'error') {
     return {
       ...state,
-      error: action.message,
+      error: action.error,
       loading: false
     }
   } else {
@@ -66,7 +66,7 @@ export default function Jokes () {
 
     fetchRandomJoke("https://icanhazdadjoke.com/")
       .then((joke) => dispatch({ type: 'success', joke: joke.joke }))
-      .catch(({message}) => dispatch({ type: 'error', message }))
+      .catch((error) => dispatch({ type: 'error', error: error }))
   }
 
   React.useEffect(() => {
