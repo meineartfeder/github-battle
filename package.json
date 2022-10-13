@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "NODE_ENV='production' webpack"
+    "build": "NODE_ENV='production' webpack",
+    "api": "node ./server/index.js",
+    "test": "./node_modules/mocha/bin/_mocha --exit"
   },
   "babel": {
     "presets": [
@@ -22,6 +24,12 @@
   "license": "ISC",
   "dependencies": {
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "knex": "^0.13.0",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.2.1",
+    "lodash": "^4.17.21",
+    "pg": "^8.0.3",
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
@@ -34,13 +42,17 @@
     "@babel/preset-env": "^7.18.9",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@types/lodash": "^4.14.186",
     "@types/react": "^18.0.19",
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
     "babel-loader": "^8.2.5",
+    "chai": "4.1.1",
+    "chai-http": "^3.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
+    "mocha": "^10.0.0",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",

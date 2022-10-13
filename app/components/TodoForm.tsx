@@ -3,21 +3,21 @@ import PropTypes from 'prop-types'
 import ThemeContext from '../contexts/theme'
 import { MdAddCircle } from 'react-icons/md'
 
-export default function TodoForm ({ addTask }: {
-  addTask: (task: string) => void
+export default function TodoForm ({ addTodo }: {
+  addTodo: (todo: string) => void
 }) {
-  const [ task, setTask ] = React.useState('')
+  const [ todo, setTodo ] = React.useState('')
   const theme = React.useContext(ThemeContext)
 
   const handleSubmit = (e:FormEvent) => {
     e.preventDefault();
 
-    addTask(task)
-    setTask('')
+    addTodo(todo)
+    setTodo('')
   }
 
   const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
-    setTask(e.target.value)
+    setTodo(e.target.value)
   }
 
   return (
@@ -29,14 +29,14 @@ export default function TodoForm ({ addTask }: {
           type='text'
           className={`input-${theme}`}
           autoComplete='off'
-          value={task}
+          value={todo}
           onChange={handleChange}
         />
         <button
           className={`btn ${theme === 'dark' ? 'dark' : 'light'}-btn`}
           type='submit'
           title='Submit'
-          disabled={!task}>
+          disabled={!todo}>
           <MdAddCircle size={26} />
         </button>
       </div>
@@ -45,5 +45,5 @@ export default function TodoForm ({ addTask }: {
 }
 
 TodoForm.propTypes = {
-  addTask: PropTypes.func.isRequired
+  addTodo: PropTypes.func.isRequired
 }

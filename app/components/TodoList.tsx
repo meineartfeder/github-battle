@@ -1,14 +1,17 @@
 import React, { ChangeEvent } from 'react'
 import PropTypes from 'prop-types'
 import { MdOutlineDeleteOutline, MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md'
+import { Todo } from "../utils/api.todos"
+import Loading from "./Loading"
 
-function TodoListItem({ id, todo, done, onDelete, onDone, onChange }: {
-  id: number,
+function TodoListItem({ id, todo, done, onDelete, onDone, onChange, onBlur }: {
+  id: string,
   todo: string,
   done: boolean,
-  onDelete: (id: number) => void,
-  onDone: (id: number) => void,
-  onChange: (id: number, target: string) => void,
+  onDelete: (id: string) => void,
+  onDone: (id: string) => void,
+  onChange: (id: string, value: string) => void,
+  onBlur: (id: string, value: string) => void,
 }) {
   const [ value, setValue ] = React.useState(todo);
 
@@ -26,6 +29,12 @@ function TodoListItem({ id, todo, done, onDelete, onDone, onChange }: {
     e.preventDefault()
 
     onChange(id, e.target.value)
+  }
+
+  const onItemBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
+
+    onBlur(id, e.target.value)
   }
 
   return (
@@ -47,6 +56,7 @@ function TodoListItem({ id, todo, done, onDelete, onDone, onChange }: {
         type="text"
         value={value}
         onChange={onItemChange}
+        onBlur={onItemBlur}
       />
       <button className="btn-clear" onClick={onClickDelete}>
         <MdOutlineDeleteOutline color="#FFFFFF" size={26} />
@@ -61,27 +71,28 @@ TodoListItem.propTypes = {
   done: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired
 }
 
-export interface TodoItem {
-  id: number,
-  value: string,
-  done: boolean
-}
-
-export default function TodoList({ todos, onDelete, onDone, onChange }: {
-  todos: TodoItem[],
-  onDelete: (id: number) => void,
-  onDone: (id: number) => void,
-  onChange: (id: number, target: string) => void,
+export default function TodoList({ todos, onDelete, onDone, onChange, onBlur, loading }: {
+  todos: Todo[],
+  onDelete: (id: string) => void,
+  onDone: (id: string) => void,
+  onChange: (id: string, value: string) => void,
+  onBlur: (id: string, value: string) => void,
+  loading: boolean
 }) {
+  if (loading === true) {
+    return <Loading text="Todossss" />
+  }
+
   return (
     <React.Fragment>
       <ul className='todo-list'>
         {todos.map((todo, index) => {
           return (
-            <TodoListItem key={index} todo={todo.value} done={todo.done} id={index} onDelete={onDelete} onDone={onDone} onChange={onChange} />
+            <TodoListItem key={index} todo={todo.value} done={todo.done} id={todo.id} onDelete={onDelete} onDone={onDone} onChange={onChange} onBlur={onBlur} />
           )
         })}
       </ul>
@@ -93,5 +104,7 @@ TodoList.propTypes = {
   todos: PropTypes.array.isRequired,
   onDelete: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 }

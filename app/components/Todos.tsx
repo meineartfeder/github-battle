@@ -1,19 +1,14 @@
 import React from 'react'
+import _ from 'lodash';
 import PropTypes from 'prop-types'
-import TodoList, { TodoItem } from './TodoList'
+import { getTodos, addTodo, deleteTodo, changeTodo, Todo } from "../utils/api.todos"
+import TodoList from './TodoList'
 import TodoForm from './TodoForm'
 import queryString from 'query-string'
 
-const todoItems: TodoItem[] = [];
-todoItems.push({ id: 1, value: "Learn React", done: false });
-todoItems.push({ id: 2, value: "Go shopping", done: false });
-todoItems.push({ id: 3, value: "Buy flowers", done: false });
-todoItems.push({ id: 4, value: "Feed the Cats", done: false });
-todoItems.push({ id: 5, value: "Cleanup Bathroom", done: false });
-todoItems.push({ id: 6, value: "Answer Mails", done: true });
+const apiErrorMessage = `Uuupps, heute gibt's leider keine Todos für dich!`
 
-
-function Header ({ name = "" }) {
+function Header ({ name = '' }) {
   return (
     <h1>{name} ToDos</h1>
   )
@@ -23,96 +18,136 @@ Header.propTypes = {
   name: PropTypes.string
 }
 
+type TodosActions = {
+  type: "success",
+  todos: Todo[],
+} | {
+  type: "loading",
+  loading: boolean
+} | {
+  type: "error",
+  error: string
+}
+
+interface TodosState {
+  todos: null | Todo[];
+  loading: boolean;
+  error: null | string;
+}
+
+function todosReducer(state: TodosState, action: TodosActions) {
+  if (action.type === 'success') {
+    return {
+      todos: action.todos,
+      error: null,
+      loading: false
+    }
+  } else if (action.type === 'loading') {
+    return {
+      todos: null,
+      error: null,
+      loading: true
+    }
+  } else if (action.type === 'error') {
+    return {
+      ...state,
+      error: action.error,
+      loading: false
+    }
+  } else {
+    throw new Error(`That action type isn't supported.`)
+  }
+}
+
 export default function Todos ({ location }: {location: {search: string}}) {
-  const [ todos, setTodos ] = React.useState(todoItems)
+  const [state, dispatch] = React.useReducer(todosReducer, {
+    todos: null,
+    error: null,
+    loading: true,
+  })
+  const { todos, loading, error } = state;
   const { name } = queryString.parse(location.search);
 
-  const handleSubmit = (task: string) => {
-    setTodos((todos) => {
-      return [...todos, {
-        id: todos.length + 1,
-        value: task,
-        done: false
-      }]
-    })
-  }
-  const handleDelete = (id: number) => {
-    todos.splice(id, 1);
-    setTodos((todos) => {
-      return [...todos]
-    });
-  }
-  const handleDone = (id: number) => {
-    var todo = todos[id];
-    todo.done = !todo.done;
+  React.useEffect(() => {
+    dispatch({type: 'loading', loading: true})
 
-    setTodos((todos) => {
-      return [...todos]
-    });
-  }
-   const handleChange = (id: number, task: string) => {
-    todos[id].value = task;
+    getTodos()
+      .then((todos) => _.orderBy(todos, ['id'], ['asc']))
+      .then((todos) => dispatch({ type: 'success', todos: todos }))
+      .catch(() => dispatch({ type: 'error', error: apiErrorMessage }))
+  }, [])
 
-    setTodos((todos) => {
-      return [...todos]
-    });
+  const handleSubmit = (todo: string) => {
+    addTodo(todo)
+      .then((todo) => dispatch({ type: 'success', todos: [...todos, todo]}))
+      .catch(() => dispatch({ type: 'error', error: apiErrorMessage }))
+  }
+  const handleDelete = (id: string) => {
+    if (!todos) {
+      return;
+    }
+    _.remove(todos, todo => todo.id === id);
+
+    deleteTodo(id)
+      .then(() => dispatch({ type: 'success', todos: todos }))
+      .catch(() => dispatch({ type: 'error', error: apiErrorMessage }))
+  }
+  const changeValueInTodosArray = (id: string, key: 'done' | 'value', value?: string): { todos: Todo[], todo: Todo } => {
+    const todo = _.find(todos, { id: id }) as Todo;
+
+    if (key === 'done') {
+      todo.done = !todo.done;
+    } else if (key === 'value' && value) {
+      todo.value = value;
+    }
+
+    const newTodos =  _.map(todos, (todo) => todo.id === id ? todo : todo);
+
+    return { 
+      'todos': newTodos, 
+      'todo': todo
+     }
+  }
+  const handleDone = (id: string) => {
+    const newTodos = changeValueInTodosArray(id, 'done');
+
+    changeTodo(id, newTodos.todo)
+      .then(() => dispatch({ type: 'success', todos: newTodos.todos }))
+      .catch(() => dispatch({ type: 'error', error: apiErrorMessage }))
+  }
+  const handleChange = (id: string, value: string) => {
+    const newTodos = changeValueInTodosArray(id, 'value', value);
+
+    dispatch({ type: 'success', todos: newTodos.todos })
+  }
+  const handleBlur = (id: string, value: string) => {
+    const newTodos = changeValueInTodosArray(id, 'value', value);
+
+     changeTodo(id, newTodos.todo)
+       .then(() => dispatch({ type: 'success', todos: newTodos.todos }))
+       .catch(() => dispatch({ type: 'error', error: apiErrorMessage }))
+  }
+
+  if (error || !todos) {
+    return (
+      <p className="center-text error">{error}</p>
+    )
   }
 
   return (
     <React.Fragment>
       <Header name={name as string} />
       <TodoForm 
-        addTask={handleSubmit}
+        addTodo={handleSubmit}
       />
       <TodoList 
         todos={todos} 
         onDelete={handleDelete} 
         onDone={handleDone} 
         onChange={handleChange} 
+        onBlur={handleBlur} 
+        loading={loading}
       />
     </React.Fragment>
   )
 }
-
-// export default class Todos extends React.Component {
-//   state = { todoItems: todoItems }
-//   componentDidMount() {
-//     console.log(todoItems)
-//   }
-//   handleSubmit = (task) => {
-//     todoItems.push({ 
-//       id: todoItems.length + 1, 
-//       value: task, 
-//       done: false
-//     })
-
-//     this.setState({ todoItems: todoItems }); 
-//   }
-//   handleDelete = (id) => {
-//     console.log(id, todoItems);
-//     todoItems.splice(id, 1);
-//     this.setState({ todoItems: todoItems }); 
-//   }
-//   handleDone = (id) => {
-//     console.log(id, todoItems);
-//     var todo = todoItems[id];
-//     todo.done = !todo.done;
-//     this.setState({ todoItems: todoItems }); 
-//   }
-//   handleChange = (id, task) => {
-//     todoItems[id].value = task;
-//     this.setState({ todoItems: todoItems });
-//   }
-//   render() {
-//     const { todoItems } = this.state
-//     const { name } = queryString.parse(this.props.location.search)
-
-//     return (
-//       <React.Fragment>
-//         <Header name={name} />
-//         <TodoForm addTask={this.handleSubmit} />
-//         <TodoList todos={todoItems} onDelete={this.handleDelete} onDone={this.handleDone} onChange={this.handleChange} />
-//       </React.Fragment>
-//     )
-//   }
-// }
